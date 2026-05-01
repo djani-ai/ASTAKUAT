@@ -17,6 +17,7 @@ Aplikasi Astakuat adalah platform web yang dikembangkan untuk mendukung kegiatan
 - cp .env.example .env
 - php artisan key generate
 - php artisan migrate:fresh --seed
+  Jika perlu - php artisan shield:setup - php artisan shield:super-admin
 - php artisan make:filament-user
 
 ## Penggunaan

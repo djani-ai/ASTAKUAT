@@ -22,7 +22,8 @@ return new class extends Migration
             $table->string('ktp')->nullable();
             $table->string('kta')->nullable();
             $table->string('sertifikat')->nullable();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Relasi ke tabel users
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('pr_id')->constrained('data_prs')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -17,12 +17,9 @@ return new class extends Migration
             $table->string('ketua');
             $table->string('ket_mds');
             $table->string('satkoryon');
-            // sk_upload biasanya menyimpan path file (string)
             $table->string('sk_upload')->nullable();
-            // Masa khidmat & SK Berakhir biasanya bertipe DATE
-            $table->string('ms_khidmad'); // Contoh: "2021-2024"
-            $table->date('sk_berakhir');
-            // Media sosial (nullable karena ada tanda tanya di gambar)
+            $table->string('ms_khidmad')->nullable();
+            $table->date('sk_berakhir')->nullable();
             $table->string('fb')->nullable();
             $table->string('ig')->nullable();
             $table->timestamps();

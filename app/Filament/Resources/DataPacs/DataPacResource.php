@@ -10,19 +10,23 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class DataPacResource extends Resource
 {
     protected static ?string $model = DataPac::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
+    protected static ?string $slug = 'data-pac';
+    protected static ?string $label = 'Data PAC';
+    protected static ?string $pluralLabel = 'Data PAC';
+    protected static ?int $navigationSort = 1;
+    protected static string | UnitEnum| null $navigationGroup = 'Master Data';
     protected static ?string $recordTitleAttribute = 'Data PAC';
 
     public static function form(Schema $schema): Schema
@@ -30,20 +34,29 @@ class DataPacResource extends Resource
         return $schema
             ->components([
                 TextInput::make('nama_pac')
+                    ->label('Nama PAC')
                     ->required(),
                 TextInput::make('ketua')
+                    ->label('Ketua')
                     ->required(),
                 TextInput::make('ket_mds')
+                    ->label('Ketua MDS')
                     ->required(),
                 TextInput::make('satkoryon')
+                    ->label('Ketua Satkoryon')
                     ->required(),
-                TextInput::make('sk_upload'),
+                FileUpload::make('sk_upload')
+                    ->label('SK Upload'),
                 TextInput::make('ms_khidmad')
+                    ->label('Masa Khidmad')
                     ->required(),
                 DatePicker::make('sk_berakhir')
+                    ->label('SK Berakhir')
                     ->required(),
-                TextInput::make('fb'),
-                TextInput::make('ig'),
+                TextInput::make('fb')
+                    ->label('Facebook'),
+                TextInput::make('ig')
+                    ->label('Instagram'),
             ]);
     }
 
@@ -53,29 +66,40 @@ class DataPacResource extends Resource
             ->recordTitleAttribute('Data PAC')
             ->columns([
                 TextColumn::make('nama_pac')
+                    ->label('Nama PAC')
                     ->searchable(),
                 TextColumn::make('ketua')
+                    ->label('Ketua')
                     ->searchable(),
                 TextColumn::make('ket_mds')
+                    ->label('Ketua MDS')
                     ->searchable(),
                 TextColumn::make('satkoryon')
+                    ->label('Ketua Satkoryon')
                     ->searchable(),
                 TextColumn::make('sk_upload')
+                    ->label('SK Upload')
                     ->searchable(),
                 TextColumn::make('ms_khidmad')
+                    ->label('Masa Khidmad')
                     ->searchable(),
                 TextColumn::make('sk_berakhir')
+                    ->label('SK Berakhir')
                     ->date()
                     ->sortable(),
                 TextColumn::make('fb')
+                    ->label('Facebook')
                     ->searchable(),
                 TextColumn::make('ig')
+                    ->label('Instagram')
                     ->searchable(),
                 TextColumn::make('created_at')
+                    ->label('Created At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Updated At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -15,13 +15,16 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class DataSuratPrResource extends Resource
 {
     protected static ?string $model = DataSuratPr::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
+    protected static ?string $slug = 'data-surat-pr';
+    protected static ?string $label = 'Data Surat PR';
+    protected static ?string $pluralLabel = 'Data Surat PR';
+    protected static ?int $navigationSort = 3;
+    protected static string | UnitEnum | null $navigationGroup = 'Administrasi';
     protected static ?string $recordTitleAttribute = 'DataSuratPr';
 
     public static function form(Schema $schema): Schema

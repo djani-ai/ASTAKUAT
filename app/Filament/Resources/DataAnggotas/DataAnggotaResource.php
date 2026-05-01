@@ -4,8 +4,6 @@ namespace App\Filament\Resources\DataAnggotas;
 
 use App\Filament\Resources\DataAnggotas\Pages\ManageDataAnggotas;
 use App\Models\DataAnggota;
-use BackedEnum;
-use Faker\Core\File;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -16,17 +14,19 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class DataAnggotaResource extends Resource
 {
     protected static ?string $model = DataAnggota::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
+    protected static ?string $slug = 'data-anggota';
+    protected static ?string $label = 'Data Anggota';
+    protected static ?string $pluralLabel = 'Data Anggota';
+    protected static ?int $navigationSort = 1;
+    protected static string | UnitEnum | null $navigationGroup = 'Kaderisasi';
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -67,6 +67,14 @@ class DataAnggotaResource extends Resource
                 FileUpload::make('sertifikat')
                     ->label('Sertifikat Kaderisasi')
                     ->acceptedFileTypes(['image/*', 'application/pdf']),
+                Select::make('user_id')
+                    ->label('User')
+                    ->relationship('user', 'name')
+                    ->required(),
+                Select::make('pr_id')
+                    ->label('PR')
+                    ->relationship('pr', 'nama_pr')
+                    ->required(),
             ]);
     }
 
@@ -102,6 +110,12 @@ class DataAnggotaResource extends Resource
                 ImageColumn::make('sertifikat')
                     ->label('Sertifikat Kaderisasi')
                     ->searchable(),
+                TextColumn::make('user.name')
+                    ->label('User')
+                    ->searchable(),
+                TextColumn::make('pr.nama_pr')
+                    ->label('PR')
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -110,6 +124,7 @@ class DataAnggotaResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
             ])
             ->filters([
                 //

@@ -16,15 +16,17 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class PengumumanResource extends Resource
 {
     protected static ?string $model = Pengumuman::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
+    protected static ?string $slug = 'pengumuman';
+    protected static ?string $label = 'Pengumuman';
+    protected static ?string $pluralLabel = 'Pengumuman';
+    protected static ?int $navigationSort = 2;
+    protected static string | UnitEnum | null $navigationGroup = 'Informasi';
     protected static ?string $recordTitleAttribute = 'Pengumuman';
-
     public static function form(Schema $schema): Schema
     {
         return $schema

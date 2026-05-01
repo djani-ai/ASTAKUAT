@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('data_prs', function (Blueprint $table) {
             $table->id();
             $table->string('nama_pr');
-            $table->string('ketua');
-            $table->string('ket_mds');
-            $table->string('satkorkel');
+            $table->string('ketua')->nullable();
+            $table->string('ket_mds')->nullable();
+            $table->string('satkorkel')->nullable();
             $table->string('sk_upload')->nullable();
-            $table->string('ms_khidmad'); // Contoh: "2021-2024"
-            $table->date('sk_berakhir');
+            $table->string('ms_khidmad')->nullable(); // Contoh: "2021-2024"
+            $table->date('sk_berakhir')->nullable();
             $table->string('fb')->nullable();
             $table->string('ig')->nullable();
             $table->foreignId('pac_id')->nullable()->constrained('data_pacs')->onDelete('cascade');
