@@ -13,10 +13,11 @@ Aplikasi Astakuat adalah platform web yang dikembangkan untuk mendukung kegiatan
 
 ## Instalasi
 
-1.  - composer install
-
+- composer install
 - cp .env.example .env
 - php artisan key generate
+- php artisan migrate:fresh --seed
+- php artisan make:filament-user
 
 ## Penggunaan
 

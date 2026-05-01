@@ -5,6 +5,7 @@ namespace App\Filament\Resources\DataAnggotas;
 use App\Filament\Resources\DataAnggotas\Pages\ManageDataAnggotas;
 use App\Models\DataAnggota;
 use BackedEnum;
+use Faker\Core\File;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -16,6 +17,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -30,29 +32,41 @@ class DataAnggotaResource extends Resource
         return $schema
             ->components([
                 TextInput::make('nama')
+                    ->label('Nama Lengkap')
                     ->required(),
                 TextInput::make('t_lahir')
+                    ->label('Tempat Lahir')
                     ->required(),
                 DatePicker::make('tgl_lahir')
+                    ->label('Tanggal Lahir')
                     ->required(),
                 TextInput::make('pekerjaan')
+                    ->label('Pekerjaan')
                     ->required(),
                 Select::make('p_kaderisasi')
                     ->label('Status Kaderisasi')
                     ->multiple()
                     ->options([
-                        'kaderisasi' => 'Kaderisasi',
-                        'non-kaderisasi' => 'Non-Kaderisasi',
+                        'PKD' => 'PKD',
+                        'PKL' => 'PKL',
+                        'PKN' => 'PKN',
+                        'PKP' => 'PKP',
+                        'DIKLATSAR' => 'DIKLATSAR',
+                        'DIKLATNAS' => 'DIKLATNAS',
+                        'DIKLATNAS LANJUT' => 'DIKLATNAS LANJUT',
                     ])
                     ->required(),
                 FileUpload::make('foto')
-                    ->image(),
+                    ->label('Foto'),
                 FileUpload::make('ktp')
-                    ->image(),
+                    ->label('KTP')
+                    ->acceptedFileTypes(['image/*', 'application/pdf']),
                 FileUpload::make('kta')
-                    ->image(),
+                    ->label('KTA')
+                    ->acceptedFileTypes(['image/*', 'application/pdf']),
                 FileUpload::make('sertifikat')
-                    ->document(),
+                    ->label('Sertifikat Kaderisasi')
+                    ->acceptedFileTypes(['image/*', 'application/pdf']),
             ]);
     }
 
@@ -61,23 +75,32 @@ class DataAnggotaResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('nama')
+                    ->label('Nama Lengkap')
                     ->searchable(),
                 TextColumn::make('t_lahir')
+                    ->label('Tempat Lahir')
                     ->searchable(),
                 TextColumn::make('tgl_lahir')
+                    ->label('Tanggal Lahir')
                     ->date()
                     ->sortable(),
                 TextColumn::make('pekerjaan')
+                    ->label('Pekerjaan')
                     ->searchable(),
                 TextColumn::make('p_kaderisasi')
+                    ->label('Status Kaderisasi')
                     ->searchable(),
-                TextColumn::make('foto')
+                ImageColumn::make('foto')
+                    ->label('Foto')
                     ->searchable(),
-                TextColumn::make('ktp')
+                ImageColumn::make('ktp')
+                    ->label('KTP')
                     ->searchable(),
-                TextColumn::make('kta')
+                ImageColumn::make('kta')
+                    ->label('KTA')
                     ->searchable(),
-                TextColumn::make('sertifikat')
+                ImageColumn::make('sertifikat')
+                    ->label('Sertifikat Kaderisasi')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()

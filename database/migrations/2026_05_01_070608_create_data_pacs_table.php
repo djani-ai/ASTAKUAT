@@ -1,0 +1,39 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('data_pacs', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_pac');
+            $table->string('ketua');
+            $table->string('ket_mds');
+            $table->string('satkoryon');
+            // sk_upload biasanya menyimpan path file (string)
+            $table->string('sk_upload')->nullable();
+            // Masa khidmat & SK Berakhir biasanya bertipe DATE
+            $table->string('ms_khidmad'); // Contoh: "2021-2024"
+            $table->date('sk_berakhir');
+            // Media sosial (nullable karena ada tanda tanya di gambar)
+            $table->string('fb')->nullable();
+            $table->string('ig')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('data_pacs');
+    }
+};
