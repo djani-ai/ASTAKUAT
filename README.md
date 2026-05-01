@@ -13,10 +13,10 @@ Aplikasi Astakuat adalah platform web yang dikembangkan untuk mendukung kegiatan
 
 ## Instalasi
 
-1. Pastikan Anda memiliki server web seperti Apache atau Nginx terinstal.
-2. Clone repositori ini ke direktori web Anda.
-3. Konfigurasi database sesuai dengan file konfigurasi.
-4. Jalankan aplikasi melalui browser.
+1.  - composer install
+
+- cp .env.example .env
+- php artisan key generate
 
 ## Penggunaan
 
