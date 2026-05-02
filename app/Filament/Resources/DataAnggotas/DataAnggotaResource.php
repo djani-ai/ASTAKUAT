@@ -90,8 +90,7 @@ class DataAnggotaResource extends Resource
                     ->searchable(),
                 TextColumn::make('tgl_lahir')
                     ->label('Tanggal Lahir')
-                    ->date()
-                    ->sortable(),
+                    ->date(),
                 TextColumn::make('pekerjaan')
                     ->label('Pekerjaan')
                     ->searchable(),

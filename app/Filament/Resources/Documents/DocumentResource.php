@@ -4,18 +4,25 @@ namespace App\Filament\Resources\Documents;
 
 use App\Filament\Resources\Documents\Pages\ManageDocuments;
 use App\Models\Document;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
+use Joaopaulolndev\FilamentPdfViewer\Forms\Components\PdfViewerField;
+use Joaopaulolndev\FilamentPdfViewer\Infolists\Components\PdfViewerEntry;
+
 use UnitEnum;
 
 class DocumentResource extends Resource
@@ -39,14 +46,17 @@ class DocumentResource extends Resource
                     ->label('Jenis File')
                     ->required(),
                 FileUpload::make('upload_path')
-                    ->label('Upload Path')
-                    ->previewable(true)
+                    ->label('File Document')
                     ->acceptedFileTypes(['application/pdf'])
+                    ->disk('public')
                     ->directory('documents')
-                    ->visibility('public')
-                    ->maxSize(10240) // 10 MB in KB
+                    ->maxSize(10240)
+                    ->previewable(true)
                     ->downloadable()
                     ->required(),
+                PdfViewerField::make('upload_path')
+                    ->label('View the PDF')
+                    ->minHeight('40svh'),
                 Hidden::make('user_id')
                     ->default(fn() => auth()->id()) // Menggunakan null safe operator (?->) agar tidak error jika session habis
                     ->required(),
@@ -67,6 +77,9 @@ class DocumentResource extends Resource
                 TextColumn::make('user.name')
                     ->label('Di Upload Oleh')
                     ->searchable(),
+                // TextColumn::make('upload_path')
+                //     ->label('File Document')
+                //     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -80,8 +93,14 @@ class DocumentResource extends Resource
                 //
             ])
             ->recordActions([
+                Action::make('Download')
+                    ->url(fn(Document $record) => Storage::url($record->upload_path))
+                    ->openUrlInNewTab()
+                    ->icon(Heroicon::FolderArrowDown),
+                ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make(),
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
