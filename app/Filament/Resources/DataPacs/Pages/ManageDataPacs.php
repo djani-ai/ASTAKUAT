@@ -4,7 +4,11 @@ namespace App\Filament\Resources\DataPacs\Pages;
 
 use App\Filament\Resources\DataPacs\DataPacResource;
 use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\ManageRecords;
+use Filament\Support\Icons\Heroicon;
 
 class ManageDataPacs extends ManageRecords
 {
@@ -13,7 +17,11 @@ class ManageDataPacs extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->label('Tambah')
+                ->icon(Heroicon::Plus)
+                ->button()
+                ->color('primary'),
         ];
     }
 }

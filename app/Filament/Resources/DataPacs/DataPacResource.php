@@ -4,19 +4,28 @@ namespace App\Filament\Resources\DataPacs;
 
 use App\Filament\Resources\DataPacs\Pages\ManageDataPacs;
 use App\Models\DataPac;
-use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use UnitEnum;
 
 class DataPacResource extends Resource
@@ -33,38 +42,65 @@ class DataPacResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('nama_pac')
-                    ->label('Nama PAC')
-                    ->required(),
-                TextInput::make('ketua')
-                    ->label('Ketua')
-                    ->required(),
-                TextInput::make('ket_mds')
-                    ->label('Ketua MDS')
-                    ->required(),
-                TextInput::make('satkoryon')
-                    ->label('Ketua Satkoryon')
-                    ->required(),
-                FileUpload::make('sk_upload')
-                    ->label('Upload SK')
-                    ->placeholder('Unggah SK Pimpinan Ranting dalam format PDF dengan ukuran maksimal 10 MB')
-                    ->previewable(true)
-                    ->acceptedFileTypes(['application/pdf'])
-                    ->directory('documents')
-                    ->visibility('public')
-                    ->maxSize(10240) // 10 MB in KB
-                    ->downloadable()
-                    ->required(),
-                TextInput::make('ms_khidmad')
-                    ->label('Masa Khidmad')
-                    ->required(),
-                DatePicker::make('sk_berakhir')
-                    ->label('SK Berakhir')
-                    ->required(),
-                TextInput::make('fb')
-                    ->label('Facebook'),
-                TextInput::make('ig')
-                    ->label('Instagram'),
+                Fieldset::make('Pengurus Pimpinan Anak Cabang')
+                    ->schema([
+                        TextInput::make('nama_pac')
+                            ->label('Nama PAC')
+                            ->placeholder('Nama Pimpinan Anak Cabang (PAC)')
+                            ->required(),
+                        TextInput::make('ketua')
+                            ->label('Ketua')
+                            ->placeholder('Nama Lengkap Ketua PAC')
+                            ->required(),
+                        TextInput::make('ket_mds')
+                            ->label('Ketua MDS')
+                            ->placeholder('Nama Lengkap Ketua MDS')
+                            ->required(),
+                        TextInput::make('satkoryon')
+                            ->label('Ketua Satkoryon')
+                            ->placeholder('Nama Lengkap Ketua Satkoryon')
+                            ->required(),
+                    ])->columnSpanFull(),
+                Fieldset::make('SK dan Masa Khidmad')
+                    ->schema([
+                        FileUpload::make('sk_upload')
+                            ->label('File SK')
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->disk('public')
+                            ->directory('documents')
+                            ->maxSize(10240)
+                            ->previewable(true)
+                            ->downloadable()
+                            ->previewable(true)
+                            ->openable()
+                            ->columnSpanFull(),
+                        TextInput::make('ms_khidmad')
+                            ->label('Masa Khidmad')
+                            ->mask('9999-9999')
+                            ->placeholder('YYYY-YYYY')
+                            ->required(),
+                        DatePicker::make('sk_berakhir')
+                            ->label('SK Berakhir')
+                            ->native(false)
+                            ->required(),
+                    ])->columnSpanFull(),
+                Fieldset::make('Media Sosial')
+                    ->schema([
+                        TextInput::make('fb')
+                            ->label('Facebook')
+                            ->url()
+                            ->prefixIcon(Heroicon::Newspaper)
+                            ->prefixIconColor('gray')
+                            ->copyable(copyMessage: 'Copied!', copyMessageDuration: 1500)
+                            ->placeholder('Masukkan URL Facebook'),
+                        TextInput::make('ig')
+                            ->label('Instagram')
+                            ->url()
+                            ->prefixIcon(Heroicon::Newspaper)
+                            ->prefixIconColor('gray')
+                            ->copyable(copyMessage: 'Copied!', copyMessageDuration: 1500)
+                            ->placeholder('Masukkan URL Instagram'),
+                    ])->columnSpanFull(),
             ]);
     }
 
@@ -85,9 +121,6 @@ class DataPacResource extends Resource
                 TextColumn::make('satkoryon')
                     ->label('Ketua Satkoryon')
                     ->searchable(),
-                TextColumn::make('sk_upload')
-                    ->label('SK Upload')
-                    ->searchable(),
                 TextColumn::make('ms_khidmad')
                     ->label('Masa Khidmad')
                     ->searchable(),
@@ -95,12 +128,6 @@ class DataPacResource extends Resource
                     ->label('SK Berakhir')
                     ->date()
                     ->sortable(),
-                TextColumn::make('fb')
-                    ->label('Facebook')
-                    ->searchable(),
-                TextColumn::make('ig')
-                    ->label('Instagram')
-                    ->searchable(),
                 TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime()
@@ -116,12 +143,17 @@ class DataPacResource extends Resource
                 //
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make(),
+                ForceDeleteAction::make(),
+                RestoreAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }
@@ -131,5 +163,12 @@ class DataPacResource extends Resource
         return [
             'index' => ManageDataPacs::route('/'),
         ];
+    }
+    public static function getRecordRouteBindingEloquentQuery(): Builder
+    {
+        return parent::getRecordRouteBindingEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 }

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('sk_berakhir')->nullable();
             $table->string('fb')->nullable();
             $table->string('ig')->nullable();
-            $table->foreignId('pac_id')->nullable()->constrained('data_pacs')->onDelete('cascade');
+            $table->foreignId('pac_id')->nullable()->constrained('data_pacs')->onDelete('set null');
             $table->timestamps();
         });
     }

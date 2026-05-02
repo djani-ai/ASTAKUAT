@@ -54,9 +54,6 @@ class DocumentResource extends Resource
                     ->previewable(true)
                     ->downloadable()
                     ->required(),
-                PdfViewerField::make('upload_path')
-                    ->label('View the PDF')
-                    ->minHeight('40svh'),
                 Hidden::make('user_id')
                     ->default(fn() => auth()->id()) // Menggunakan null safe operator (?->) agar tidak error jika session habis
                     ->required(),
@@ -77,9 +74,6 @@ class DocumentResource extends Resource
                 TextColumn::make('user.name')
                     ->label('Di Upload Oleh')
                     ->searchable(),
-                // TextColumn::make('upload_path')
-                //     ->label('File Document')
-                //     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

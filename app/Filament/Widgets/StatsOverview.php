@@ -10,9 +10,11 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatsOverview extends StatsOverviewWidget
 {
+    protected static ?int $sort = 1;
     protected static bool $isLazy = false;
     protected ?string $heading = 'Statistik Aplikasi';
-    protected ?string $description = 'Statistik terkini dari aplikasi ASTAKUAT';
+    protected ?string $description = 'Statistik terkini dari aplikasi ';
+    protected ?string $pollingInterval = null;
     protected function getStats(): array
     {
         $PR = DataPr::count();
