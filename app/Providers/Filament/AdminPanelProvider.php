@@ -56,6 +56,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 NavigationGroup::make()
+                    ->label('Informasi')
+                    ->icon('heroicon-o-document-text')
+                    ->collapsed(true),
+                NavigationGroup::make()
                     ->label('Master Data')
                     ->icon('heroicon-o-document-text')
                     ->collapsed(true),

@@ -9,6 +9,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Resources\Resource;
@@ -36,9 +37,8 @@ class PengumumanResource extends Resource
                 Textarea::make('isi')
                     ->required()
                     ->columnSpanFull(),
-                TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
+                Hidden::make('user_id')
+                    ->default(fn() => auth()->id())
             ]);
     }
 

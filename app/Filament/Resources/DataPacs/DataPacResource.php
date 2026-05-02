@@ -46,7 +46,15 @@ class DataPacResource extends Resource
                     ->label('Ketua Satkoryon')
                     ->required(),
                 FileUpload::make('sk_upload')
-                    ->label('SK Upload'),
+                    ->label('Upload SK')
+                    ->placeholder('Unggah SK Pimpinan Ranting dalam format PDF dengan ukuran maksimal 10 MB')
+                    ->previewable(true)
+                    ->acceptedFileTypes(['application/pdf'])
+                    ->directory('documents')
+                    ->visibility('public')
+                    ->maxSize(10240) // 10 MB in KB
+                    ->downloadable()
+                    ->required(),
                 TextInput::make('ms_khidmad')
                     ->label('Masa Khidmad')
                     ->required(),

@@ -11,6 +11,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
@@ -35,20 +36,39 @@ class DataPrResource extends Resource
         return $schema
             ->components([
                 TextInput::make('nama_pr')
+                    ->label('Nama Pimpinan Ranting')
                     ->required(),
                 TextInput::make('ketua')
+                    ->label('Ketua')
                     ->required(),
                 TextInput::make('ket_mds')
+                    ->label('Ketua MDS')
                     ->required(),
                 TextInput::make('satkorkel')
+                    ->label('Satkorkel')
                     ->required(),
-                TextInput::make('sk_upload'),
+                FileUpload::make('sk_upload')
+                    ->label('Upload SK')
+                    ->placeholder('Unggah SK Pimpinan Ranting dalam format PDF dengan ukuran maksimal 10 MB')
+                    ->previewable(true)
+                    ->acceptedFileTypes(['application/pdf'])
+                    ->directory('documents')
+                    ->visibility('public')
+                    ->maxSize(10240) // 10 MB in KB
+                    ->downloadable()
+                    ->required(),
                 TextInput::make('ms_khidmad')
+                    ->label('Masa Khidmad')
                     ->required(),
                 DatePicker::make('sk_berakhir')
+                    ->label('Masa Aktif SK (Berakhir)')
                     ->required(),
-                TextInput::make('fb'),
-                TextInput::make('ig'),
+                TextInput::make('fb')
+                    ->label('Facebook')
+                    ->placeholder('Masukkan URL Facebook'),
+                TextInput::make('ig')
+                    ->label('Instagram')
+                    ->placeholder('Masukkan URL Instagram'),
                 Select::make('pac_id')
                     ->label('Nama PAC')
                     ->options(DataPac::pluck('nama_pac', 'id')),
@@ -61,23 +81,32 @@ class DataPrResource extends Resource
             ->recordTitleAttribute('DataPr')
             ->columns([
                 TextColumn::make('nama_pr')
+                    ->label('Nama Pimpinan Ranting')
                     ->searchable(),
                 TextColumn::make('ketua')
+                    ->label('Ketua')
                     ->searchable(),
                 TextColumn::make('ket_mds')
+                    ->label('Ketua MDS')
                     ->searchable(),
                 TextColumn::make('satkorkel')
+                    ->label('Satkorkel')
                     ->searchable(),
                 TextColumn::make('sk_upload')
+                    ->label('Upload SK')
                     ->searchable(),
                 TextColumn::make('ms_khidmad')
+                    ->label('Masa Khidmad')
                     ->searchable(),
                 TextColumn::make('sk_berakhir')
+                    ->label('Masa Aktif SK (Berakhir)')
                     ->date()
                     ->sortable(),
                 TextColumn::make('fb')
+                    ->label('Facebook')
                     ->searchable(),
                 TextColumn::make('ig')
+                    ->label('Instagram')
                     ->searchable(),
                 TextColumn::make('data_pac.nama_pac')
                     ->label('Nama PAC')

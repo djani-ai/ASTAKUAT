@@ -4,15 +4,16 @@ namespace App\Filament\Resources\Documents;
 
 use App\Filament\Resources\Documents\Pages\ManageDocuments;
 use App\Models\Document;
-use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use UnitEnum;
@@ -32,14 +33,23 @@ class DocumentResource extends Resource
         return $schema
             ->components([
                 TextInput::make('nama_file')
+                    ->label('Nama File')
                     ->required(),
                 TextInput::make('jenis_file')
+                    ->label('Jenis File')
                     ->required(),
-                TextInput::make('upload_path')
+                FileUpload::make('upload_path')
+                    ->label('Upload Path')
+                    ->previewable(true)
+                    ->acceptedFileTypes(['application/pdf'])
+                    ->directory('documents')
+                    ->visibility('public')
+                    ->maxSize(10240) // 10 MB in KB
+                    ->downloadable()
                     ->required(),
-                TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
+                Hidden::make('user_id')
+                    ->default(fn() => auth()->id()) // Menggunakan null safe operator (?->) agar tidak error jika session habis
+                    ->required(),
             ]);
     }
 
@@ -49,14 +59,14 @@ class DocumentResource extends Resource
             ->recordTitleAttribute('Document')
             ->columns([
                 TextColumn::make('nama_file')
+                    ->label('Nama File')
                     ->searchable(),
                 TextColumn::make('jenis_file')
+                    ->label('Jenis File')
                     ->searchable(),
-                TextColumn::make('upload_path')
+                TextColumn::make('user.name')
+                    ->label('Di Upload Oleh')
                     ->searchable(),
-                TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
